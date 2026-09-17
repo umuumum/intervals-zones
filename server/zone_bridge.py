@@ -455,6 +455,14 @@ def main() -> None:
         print("\n(dry run: nothing written)")
         return
 
+    # A real run prints the distribution too, so a scheduled run's log is worth
+    # reading rather than just three "wrote" lines. Skipped during a backfill,
+    # where 30 identical-looking reports would bury the useful output.
+    if not args.backfill:
+        report(meta["result"], meta["pwr_pct"], meta["pwr_hrs"],
+               meta["hr_pct"], meta["hr_hrs"], meta["n_acts"])
+        print("")
+
     # Self-healing: rewrite today and the two days before, so a missed run or a
     # late-syncing activity gets corrected on the next pass.
     days = [end - dt.timedelta(days=d) for d in range(max(3, args.backfill + 1))]
