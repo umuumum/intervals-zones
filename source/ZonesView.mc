@@ -83,7 +83,7 @@ class ZonesView extends WatchUi.View {
             return;
         }
 
-        Draw.header(dc, title, "42 days · " + Draw.fmtHours(hours), w, h);
+        var headBottom = Draw.header(dc, title, "42 days · " + Draw.fmtHours(hours), w, h);
 
         var cx = w / 2.0;
         var cy = h / 2.0;
@@ -91,8 +91,8 @@ class ZonesView extends WatchUi.View {
         var labelW = w * 0.105;
         var valueW = w * 0.16;
 
-        var yTop = h * 0.205;
-        var yBot = h * 0.825;
+        var yTop = headBottom + h * 0.020;
+        var yBot = Draw.footerTop(dc, h) - h * 0.015;
         var pitch = (yBot - yTop) / n;
         var barH = pitch * 0.64;
         if (barH < 8.0) { barH = 8.0; }
@@ -116,7 +116,7 @@ class ZonesView extends WatchUi.View {
         var hr = toPolarized(m.hrPct);
         var names = ["Z1-2  easy", "Z3-4  grey zone", "Z5+  hard"];
 
-        Draw.header(dc, "POLARIZED", "P / H  vs 80·5·15", w, h);
+        var headBottom = Draw.header(dc, "POLARIZED", "P / H  vs 80·5·15", w, h);
 
         var cx = w / 2.0;
         var cy = h / 2.0;
@@ -124,12 +124,20 @@ class ZonesView extends WatchUi.View {
         var labelW = w * 0.075;
         var valueW = w * 0.16;
 
-        var yTop = h * 0.215;
-        var yBot = h * 0.845;
+        var yTop = headBottom + h * 0.022;
+        var yBot = Draw.footerTop(dc, h) - h * 0.015;
         var groupPitch = (yBot - yTop) / 3.0;
-        var headH = groupPitch * 0.28;
-        var barH = groupPitch * 0.26;
-        var gap = groupPitch * 0.05;
+
+        // Measured, not guessed: the group caption gets its real height plus a
+        // deliberate gap, and the two bars split whatever is left. Deriving the
+        // caption height from the pitch is what let the bars ride up over it.
+        var headH = dc.getFontHeight(Graphics.FONT_XTINY).toFloat();
+        var gapAfterHead = h * 0.008;
+        var gapBetweenBars = h * 0.010;
+        var gapBetweenGroups = h * 0.020;
+        var barH = (groupPitch - headH - gapAfterHead
+                    - gapBetweenBars - gapBetweenGroups) / 2.0;
+        if (barH < 8.0) { barH = 8.0; }
 
         for (var g = 0; g < 3; g++) {
             var gy = yTop + g * groupPitch;
@@ -137,8 +145,8 @@ class ZonesView extends WatchUi.View {
             dc.setColor(Draw.COL_DIM, Graphics.COLOR_TRANSPARENT);
             dc.drawText(cx, gy, Graphics.FONT_XTINY, names[g], Graphics.TEXT_JUSTIFY_CENTER);
 
-            var y1 = gy + headH;
-            var y2 = y1 + barH + gap;
+            var y1 = gy + headH + gapAfterHead;
+            var y2 = y1 + barH + gapBetweenBars;
 
             var half1 = Draw.halfWidthForBand(y1, y1 + barH, cy, radius, _isRound);
             var half2 = Draw.halfWidthForBand(y2, y2 + barH, cy, radius, _isRound);

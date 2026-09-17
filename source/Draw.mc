@@ -110,20 +110,38 @@ module Draw {
                     Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
+    //! Draws the title block and returns the y its bottom sits at, so callers
+    //! lay out below whatever the fonts actually measured rather than a guessed
+    //! fraction of screen height. Garmin's fonts are noticeably taller than a
+    //! desktop mock suggests, and fixed offsets crowd the subtitle into the
+    //! title on a real device.
     function header(dc as Graphics.Dc, title as String, sub as String,
-                    w as Number, h as Number) as Void {
+                    w as Number, h as Number) as Float {
         var cx = w / 2;
+        var y = h * 0.05;
+
         dc.setColor(COL_TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, h * 0.075, Graphics.FONT_TINY, title, Graphics.TEXT_JUSTIFY_CENTER);
-        if (sub.length() > 0) {
+        dc.drawText(cx, y, Graphics.FONT_TINY, title, Graphics.TEXT_JUSTIFY_CENTER);
+        y += dc.getFontHeight(Graphics.FONT_TINY);
+
+        if (sub != null && sub.length() > 0) {
+            y += h * 0.012;
             dc.setColor(COL_DIM, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(cx, h * 0.145, Graphics.FONT_XTINY, sub, Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(cx, y, Graphics.FONT_XTINY, sub, Graphics.TEXT_JUSTIFY_CENTER);
+            y += dc.getFontHeight(Graphics.FONT_XTINY);
         }
+        return y;
+    }
+
+    //! Top edge of the footer line -- the floor for any content above it.
+    function footerTop(dc as Graphics.Dc, h as Number) as Float {
+        return h - h * 0.05 - dc.getFontHeight(Graphics.FONT_XTINY);
     }
 
     function footer(dc as Graphics.Dc, text as String, w as Number, h as Number) as Void {
         dc.setColor(COL_DIM, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(w / 2, h * 0.855, Graphics.FONT_XTINY, text, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(w / 2, footerTop(dc, h), Graphics.FONT_XTINY, text,
+                    Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     //! Page indicator: three dots down the right edge.
