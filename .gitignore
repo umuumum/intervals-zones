@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Build output
+bin/
+*.prg
+*.debug.xml
+
+# Python
+__pycache__/
+*.pyc
+
+# Credentials never belong here.
+# resources/settings/properties.xml IS tracked, but with an EMPTY apiKey --
+# a sideloaded build needs the key compiled in, so you fill it locally and
+# must not commit that change. Guard it with:
+#   git update-index --skip-worktree resources/settings/properties.xml
+*.der
+*.pem
+.env
