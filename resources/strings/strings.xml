@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<resources>
+    <string id="AppName">Zones 42d</string>
+
+    <string id="SettingAthleteId">Athlete ID</string>
+    <string id="SettingAthleteIdPrompt">e.g. i399953</string>
+    <string id="SettingApiKey">intervals.icu API key</string>
+    <string id="SettingApiKeyPrompt">Settings &gt; Developer &gt; API key</string>
+    <string id="SettingRefreshMins">Refresh interval (minutes)</string>
+</resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+  Product ids below are the fenix 9 family as published on
+  developer.garmin.com/connect-iq/device-reference/. Building for a device you
+  have not downloaded in the SDK Manager fails loudly, so trim this list to the
+  watches you actually own if the build complains.
+
+  Run "build.sh" with the list flag to print every device id your SDK has
+  files for.
+-->
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+    <iq:application
+        entry="ZonesApp"
+        id="80efbb4aa8124337ad1e603e37a75058"
+        launcherIcon="@Drawables.LauncherIcon"
+        minApiLevel="3.2.0"
+        name="@Strings.AppName"
+        type="watch-app">
+
+        <iq:products>
+            <iq:product id="fenix9pro51mm"/>
+            <iq:product id="fenix9pro47mm"/>
+            <iq:product id="fenix9pro43mm"/>
+            <iq:product id="fenix9prosolar51mm"/>
+            <iq:product id="fenix9prosolar47mm"/>
+            <iq:product id="fenix947mm"/>
+            <iq:product id="fenix943mm"/>
+        </iq:products>
+
+        <iq:permissions>
+            <iq:uses-permission id="Communications"/>
+        </iq:permissions>
+
+        <iq:languages>
+            <iq:language>eng</iq:language>
+        </iq:languages>
+
+        <iq:barrels/>
+    </iq:application>
+</iq:manifest>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<settings>
+    <setting propertyKey="@Properties.athleteId" title="@Strings.SettingAthleteId">
+        <settingConfig type="alphaNumeric" maxLength="16"/>
+    </setting>
+    <setting propertyKey="@Properties.apiKey" title="@Strings.SettingApiKey">
+        <settingConfig type="alphaNumeric" maxLength="64"/>
+    </setting>
+    <setting propertyKey="@Properties.refreshMins" title="@Strings.SettingRefreshMins">
+        <settingConfig type="numeric" min="5" max="1440"/>
+    </setting>
+</settings>

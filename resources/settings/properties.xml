@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<properties>
+    <!-- A sideloaded build cannot be configured from the phone, so fill these
+         in here before building. They stay editable in Connect IQ app settings
+         if the build is ever installed from the store. -->
+    <property id="athleteId" type="string">i399953</property>
+    <property id="apiKey" type="string"></property>
+    <property id="refreshMins" type="number">120</property>
+</properties>
