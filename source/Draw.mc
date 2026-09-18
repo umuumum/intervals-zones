@@ -67,11 +67,14 @@ module Draw {
     //! One labelled bar: "Z3" in a left gutter, a proportional track, and the
     //! percentage right-aligned in a right gutter.
     //! `target` < 0 draws no reference tick.
+    //! `indent` shifts the label and track right, leaving a gutter at the left
+    //! of the chord for a caption that spans several bars. Zone pages pass 0.
     function bar(dc as Graphics.Dc, label as String, pct as Float, color as Number,
                  y as Float, h as Float, cx as Float, half as Float,
-                 labelW as Float, valueW as Float, target as Float) as Void {
+                 labelW as Float, valueW as Float, target as Float,
+                 indent as Float) as Void {
 
-        var left = cx - half;
+        var left = cx - half + indent;
         var right = cx + half;
         var trackX = left + labelW;
         var trackW = (right - valueW) - trackX;

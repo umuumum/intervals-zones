@@ -101,7 +101,7 @@ class ZonesView extends WatchUi.View {
             var y = yTop + i * pitch + (pitch - barH) / 2.0;
             var half = Draw.halfWidthForBand(y, y + barH, cy, radius, _isRound);
             Draw.bar(dc, "Z" + (i + 1), pct[i], colors[i],
-                     y, barH, cx, half, labelW, valueW, -1.0);
+                     y, barH, cx, half, labelW, valueW, -1.0, 0.0);
         }
 
         Draw.footer(dc, statusLine(), w, h);
@@ -114,47 +114,51 @@ class ZonesView extends WatchUi.View {
 
         var p = toPolarized(m.powerPct);
         var hr = toPolarized(m.hrPct);
-        var names = ["Z1-2  easy", "Z3-4  grey zone", "Z5+  hard"];
+        var names = ["Z1-2", "Z3-4", "Z5+"];
 
         var headBottom = Draw.header(dc, "POLARIZED", "P / H  vs 80·5·15", w, h);
 
         var cx = w / 2.0;
         var cy = h / 2.0;
         var radius = w / 2.0 - w * 0.06;
-        var labelW = w * 0.075;
+        var groupW = w * 0.155;   // left gutter: the caption, spanning both bars
+        var labelW = w * 0.055;   // the P / H marker
         var valueW = w * 0.16;
 
         var yTop = headBottom + h * 0.022;
         var yBot = Draw.footerTop(dc, h) - h * 0.015;
         var groupPitch = (yBot - yTop) / 3.0;
+        var gapBetweenGroups = h * 0.022;
 
-        // Measured, not guessed: the group caption gets its real height plus a
-        // deliberate gap, and the two bars split whatever is left. Deriving the
-        // caption height from the pitch is what let the bars ride up over it.
-        var headH = dc.getFontHeight(Graphics.FONT_XTINY).toFloat();
-        var gapAfterHead = h * 0.008;
-        var gapBetweenBars = h * 0.010;
-        var gapBetweenGroups = h * 0.020;
-        var barH = (groupPitch - headH - gapAfterHead
-                    - gapBetweenBars - gapBetweenGroups) / 2.0;
+        // The captions used to take a text line of their own, which left the two
+        // bar rows barely taller than the percentage text and made the numbers
+        // collide. Moving each caption into the left gutter, centred across its
+        // pair, gives the rows roughly half again as much height.
+        var rowH = (groupPitch - gapBetweenGroups) / 2.0;
+        var barH = rowH * 0.58;
         if (barH < 8.0) { barH = 8.0; }
 
         for (var g = 0; g < 3; g++) {
             var gy = yTop + g * groupPitch;
+            var y1 = gy + (rowH - barH) / 2.0;
+            var y2 = gy + rowH + (rowH - barH) / 2.0;
 
-            dc.setColor(Draw.COL_DIM, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(cx, gy, Graphics.FONT_XTINY, names[g], Graphics.TEXT_JUSTIFY_CENTER);
-
-            var y1 = gy + headH + gapAfterHead;
-            var y2 = y1 + barH + gapBetweenBars;
-
+            // Both bars in a pair use the narrower of the two chords, so the
+            // markers, tracks, target ticks and values line up as columns.
+            // Letting each row take its own chord staggers them and the pair
+            // stops reading as one comparison.
             var half1 = Draw.halfWidthForBand(y1, y1 + barH, cy, radius, _isRound);
             var half2 = Draw.halfWidthForBand(y2, y2 + barH, cy, radius, _isRound);
+            var halfG = (half1 < half2) ? half1 : half2;
 
-            Draw.bar(dc, "P", p[g], Draw.POL_COLORS[g], y1, barH, cx, half1,
-                     labelW, valueW, Draw.POL_TARGET[g]);
-            Draw.bar(dc, "H", hr[g], Draw.POL_COLORS[g], y2, barH, cx, half2,
-                     labelW, valueW, Draw.POL_TARGET[g]);
+            dc.setColor(Draw.COL_DIM, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(cx - halfG, gy + rowH, Graphics.FONT_XTINY, names[g],
+                        Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+
+            Draw.bar(dc, "P", p[g], Draw.POL_COLORS[g], y1, barH, cx, halfG,
+                     labelW, valueW, Draw.POL_TARGET[g], groupW);
+            Draw.bar(dc, "H", hr[g], Draw.POL_COLORS[g], y2, barH, cx, halfG,
+                     labelW, valueW, Draw.POL_TARGET[g], groupW);
         }
 
         Draw.footer(dc, statusLine(), w, h);
