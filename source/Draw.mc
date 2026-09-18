@@ -42,8 +42,31 @@ module Draw {
     // low / mid / high on the combined screen
     const POL_COLORS = [0x3B82F6, 0xF59E0B, 0xEF4444];
 
-    //! Polarized reference: the shape the distribution is being checked against.
-    const POL_TARGET = [80.0, 5.0, 15.0];
+    //! Reference distribution, as PERCENT OF TIME IN ZONE.
+    //!
+    //! Deliberately not the familiar 80/5/15. That figure classifies whole
+    //! SESSIONS by intended intensity; this screen measures seconds. A hard
+    //! session is mostly warm-up, recoveries and cool-down, so the same
+    //! training reads far lower on a time basis -- elite time-in-zone
+    //! distributions sit nearer 90/5/5. Checking seconds against a
+    //! session-based number makes any real athlete look catastrophically
+    //! under-cooked at the top.
+    //!
+    //! 88/5/7 is a polarized time-in-zone target weighted for a VO2max goal:
+    //! the middle squeezed hard, the top given more room than a generic
+    //! polarized split would.
+    const POL_TARGET = [88.0, 5.0, 7.0];
+
+    //! One word for the distribution's shape, independent of the target.
+    //! Answers "what am I actually doing", where the ticks answer "how far off".
+    function shapeLabel(pol as Array<Float>) as String {
+        var mid = pol[1];
+        var high = pol[2];
+        if (mid > 20.0) { return "threshold"; }
+        if (high > mid) { return "polarized"; }
+        if (mid > high) { return "pyramidal"; }
+        return "even";
+    }
 
     //! Half the horizontal room available at vertical offset `dy` from the
     //! screen centre. On a round watch this shrinks towards the top and bottom,
